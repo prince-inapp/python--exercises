@@ -5,6 +5,7 @@ def calculateGST(price,gstRate):
     sgst = gstRate/2
     yield sgst
     yield gstRate
+    
 def display(price,gst):
     gst = list(gst)
     # gst[0] : cgst
@@ -21,7 +22,7 @@ def display(price,gst):
     Total price with GST : {}
     '''.format(price,price_after_cgst,prince_after_sgst,total_price))
 
-price = int(input("Enter Price of item : "))
-gst_rate = int(input("Enter GST Rate: "))
+price = float(input("Enter Price of item : "))
+gst_rate = float(input("Enter GST Rate: "))
 gst = calculateGST(price= price, gstRate= gst_rate)
 display(price=price, gst= gst)
