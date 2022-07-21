@@ -18,4 +18,4 @@ class calculator:
 obj = calculator(2,3)
 obj.add()
 obj.multiply()
-obj.divide()+
+obj.divide()
