@@ -1,4 +1,5 @@
 import random
+import time
 
 rules = {'rock':'scissors', 
         'paper':'rock', 
@@ -24,15 +25,18 @@ while(count<5):
         computer_option = items[random.randint(1,3)]
         if(rules[computer_option]== user_option):
             computer_point+=1
+            time.sleep(1)
             print("Computer chooses {}. \n computer wins this round! \n  Computer Score - {} \n User Score - {}".format(computer_option, computer_point, user_point))
             count+=1
         elif(rules[user_option] == computer_option):
             user_point += 1
             count+=1
+            time.sleep(1)
             print("Computer chooses {}. \n user wins this round!\n Computer Score - {} \n User Score - {}".format(computer_option, computer_point, user_point))
         else:
-            print("Round Tied!")
+            print("Computer chooses {}. Round Tied!".format(computer_option))
 print('--------------------------------------------')
+time.sleep(1)
 if(computer_point>user_point):
     print("Computer Wins the Game!!!\n Computer Score - {} \n User Score - {}".format(computer_point,user_point))
 elif(user_point>computer_point):
