@@ -8,13 +8,18 @@ def take_int_input(msg):
         print("Invalid input")
         return take_int_input(msg)
 
-def take_float_input(msg):
+def take_marks_input(msg):
     try:
         num = float(input(msg))
+        if(num>100 or num<0):
+            print("Convert the marks out of 100 and try again.")
+            raise Exception
         return num
     except ValueError or TypeError:
         print("Invalid input")
-        return take_float_input(msg)
+        return take_marks_input(msg)
+    except Exception:
+        return take_marks_input(msg)
 
 class SRCMS():
 
@@ -24,11 +29,11 @@ class SRCMS():
         print("Enter the student details")
         roll = take_int_input("Enter the roll number: ")
         name = input("Enter the name: ")
-        maths = take_float_input("Enter the marks in maths: ")
-        physics = take_float_input("Enter the marks in physics: ")
-        chemistry = take_float_input("Enter the marks in chemistry: ")
-        english = take_float_input("Enter the marks in english: ")
-        programming = take_float_input("Enter the marks in programming: ")
+        maths = take_marks_input("Enter the marks in maths: ")
+        physics = take_marks_input("Enter the marks in physics: ")
+        chemistry = take_marks_input("Enter the marks in chemistry: ")
+        english = take_marks_input("Enter the marks in english: ")
+        programming = take_marks_input("Enter the marks in programming: ")
         student = Student(roll, name, maths, physics, chemistry, english, programming)
         return student
 
@@ -62,23 +67,23 @@ class SRCMS():
             ''')
             choice = take_int_input("Enter your choice: ")
             if(choice == 1):
-                marks = take_float_input("Enter the new marks for maths: ")
+                marks = take_marks_input("Enter the new marks for maths: ")
                 self.storage[roll].mathsMark = marks
                 print("Marks updated successfully")
             elif(choice == 2):
-                marks = take_float_input("Enter the new marks for physics: ")
+                marks = take_marks_input("Enter the new marks for physics: ")
                 self.storage[roll].physicsMark = marks
                 print("Marks updated successfully")
             elif(choice == 3):
-                marks = take_float_input("Enter the new marks for chemistry: ")
+                marks = take_marks_input("Enter the new marks for chemistry: ")
                 self.storage[roll].chemistryMark = marks
                 print("Marks updated successfully")
             elif(choice == 4):
-                marks = take_float_input("Enter the new marks for english: ")
+                marks = take_marks_input("Enter the new marks for english: ")
                 self.storage[roll].englishMark = marks
                 print("Marks updated successfully")
             elif(choice == 5):
-                marks = take_float_input("Enter the new marks for programming: ")
+                marks = take_marks_input("Enter the new marks for programming: ")
                 self.storage[roll].programmingMark = marks
                 print("Marks updated successfully")
             else:
@@ -95,6 +100,31 @@ class SRCMS():
             Programming Mark : {}
             '''.format(cls.rollNumber, cls.name, cls.mathsMark, cls.physicsMark, cls.chemistryMark, cls.englishMark, cls.programmingMark)
         )
+    def getStatus(pself,percentage):
+        if(percentage>45):
+            return "Pass"
+        else:
+            return "Fail"
+    
+    def generateReportCard(self, cls):
+        totalMarks = cls.mathsMark + cls.physicsMark + cls.chemistryMark + cls.englishMark + cls.programmingMark
+        percentage = totalMarks / 500 * 100
+        status = self.getStatus(percentage)
+        print(
+            '''
+            Roll Number : {}
+            Name : {}
+            Maths Mark : {}
+            Physics Mark : {}
+            Chemistry Mark : {}
+            English Mark : {}
+            Programming Mark : {}
+            Total Marks : {}
+            Percentage : {}%
+            Status : {}
+            '''.format(cls.rollNumber, cls.name, cls.mathsMark, cls.physicsMark, cls.chemistryMark, cls.englishMark, cls.programmingMark, totalMarks, percentage, status)
+        )
+        print("Report Card Generated")
 
 
 
@@ -132,7 +162,12 @@ def main():
             if(student != None):
                 srcms.displayStudentDetails(student)
         elif(choice == 6):
-            pass
+            roll = take_int_input("Enter roll number :")
+            student = srcms.search_by_rollNumber(roll)
+            if(student != None):
+                srcms.generateReportCard(student)
+            else:
+                print("Report Card can't be generated.")
         elif(choice == 7):
             break
         else:
