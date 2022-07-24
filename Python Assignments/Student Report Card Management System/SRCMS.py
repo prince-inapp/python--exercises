@@ -1,44 +1,141 @@
-import Student
+from Student import Student
 
-class SRCMS(Student):
-    def __init__(self, rollNumber, name, mathsMark, physicsMark,
-                 chemistryMark, englishMark, programmingMark):
-        Student.__init__(self, rollNumber, name, mathsMark, physicsMark,
-                         chemistryMark, englishMark, programmingMark)
-        self._totalMark = Student.mathsMark + Student.physicsMark + Student.chemistryMark + englishMark + programmingMark
-        self._percentage = (self._totalMark / 500) * 100
-        self._status = self.getStatus(self._percentage)
+def take_int_input(msg):
+    try:
+        num = int(input(msg))
+        return num
+    except ValueError or TypeError:
+        print("Invalid input")
+        return take_int_input(msg)
 
-    @property
-    def totalMark(self):
-        return self._totalMark
+def take_float_input(msg):
+    try:
+        num = float(input(msg))
+        return num
+    except ValueError or TypeError:
+        print("Invalid input")
+        return take_float_input(msg)
+
+class SRCMS():
+
+    storage = {}
+
+    def enterStudentDetails(self):
+        print("Enter the student details")
+        roll = take_int_input("Enter the roll number: ")
+        name = input("Enter the name: ")
+        maths = take_float_input("Enter the marks in maths: ")
+        physics = take_float_input("Enter the marks in physics: ")
+        chemistry = take_float_input("Enter the marks in chemistry: ")
+        english = take_float_input("Enter the marks in english: ")
+        programming = take_float_input("Enter the marks in programming: ")
+        student = Student(roll, name, maths, physics, chemistry, english, programming)
+        return student
+
+    @classmethod
+    def addStudent(self, cls):
+        self.storage[cls.rollNumber] = cls
+        return
     
-    @property
-    def percentage(self):
-        return self._percentage
-    
-    @property
-    def status(self):
-        return self._status
-
-    def getStatus(self, percentage):
-        if percentage >= 45:
-            return "Pass"
+    def search_by_rollNumber(self, rollNumber):
+        if rollNumber in self.storage:
+            return self.storage[rollNumber]
         else:
-            return "Fail"
+            print("Student not found")
+            return None
     
-    def generateReport(self, rollNumber, name, mathsMark, physicsMark,
-                       chemistryMark, englishMark, programmingMark):
-        print('''
-        Roll Number: {}
-        Name: {}
-        Maths: {}
-        Physics: {}
-        Chemistry: {}
-        English: {}
-        Programming: {}
-        Total: {} / 500
-        Percentage: {} %
-        Status: {}
-        '''.format(rollNumber, name, mathsMark, physicsMark,chemistryMark, englishMark, programmingMark,self.totalMark, self.percentage,self.status))
+    def delete_student_rollNumber(self, rollNumber):
+        if(self.search_by_rollNumber(rollNumber)!= None):
+            self.storage.pop(rollNumber)
+        else:
+            print("Roll Number did not found.")
 
+    def modifyMarks(self, roll):
+        if(self.search_by_rollNumber(roll)!=None):
+            print("Choose the subject you want to change marks.")
+            print('''
+            1. Maths
+            2. Physics
+            3. Chemistry
+            4. English
+            5. Programming
+            ''')
+            choice = take_int_input("Enter your choice: ")
+            if(choice == 1):
+                marks = take_float_input("Enter the new marks for maths: ")
+                self.storage[roll].mathsMark = marks
+                print("Marks updated successfully")
+            elif(choice == 2):
+                marks = take_float_input("Enter the new marks for physics: ")
+                self.storage[roll].physicsMark = marks
+                print("Marks updated successfully")
+            elif(choice == 3):
+                marks = take_float_input("Enter the new marks for chemistry: ")
+                self.storage[roll].chemistryMark = marks
+                print("Marks updated successfully")
+            elif(choice == 4):
+                marks = take_float_input("Enter the new marks for english: ")
+                self.storage[roll].englishMark = marks
+                print("Marks updated successfully")
+            elif(choice == 5):
+                marks = take_float_input("Enter the new marks for programming: ")
+                self.storage[roll].programmingMark = marks
+                print("Marks updated successfully")
+            else:
+                print("Invalid choice")
+    def displayStudentDetails(self, cls):
+        print(
+            '''
+            Roll Number : {}
+            Name : {}
+            Maths Mark : {}
+            Physics Mark : {}
+            Chemistry Mark : {}
+            English Mark : {}
+            Programming Mark : {}
+            '''.format(cls.rollNumber, cls.name, cls.mathsMark, cls.physicsMark, cls.chemistryMark, cls.englishMark, cls.programmingMark)
+        )
+
+
+
+def menu():
+    print('''
+    1. create a student record
+    2. delete a student record based on the roll number
+    3. modify the marks in a student record given in roll number
+    4. display all student records
+    5. display a students record based on the roll number
+    6. Generate Report Card
+    7. Exit
+    ''')
+
+def main():
+    srcms = SRCMS()
+    while True:
+        menu()
+        choice = take_int_input("Enter your choice: ")
+        if(choice == 1):
+            student = srcms.enterStudentDetails()
+            srcms.addStudent(student)
+        elif(choice == 2):
+            rollNumber = take_int_input("Enter the roll number: ")
+            srcms.delete_student_rollNumber(rollNumber)
+        elif(choice == 3):
+            rollNumber = take_int_input("Enter the roll number: ")
+            srcms.modifyMarks(rollNumber)
+        elif(choice == 4):
+            for key, value in srcms.storage.items():
+                srcms.displayStudentDetails(value)
+        elif(choice == 5):
+            rollNumber = take_int_input("Enter the roll number: ")
+            student = srcms.search_by_rollNumber(rollNumber)
+            if(student != None):
+                srcms.displayStudentDetails(student)
+        elif(choice == 6):
+            pass
+        elif(choice == 7):
+            break
+        else:
+            print("Invalid choice")
+
+main()

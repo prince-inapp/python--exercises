@@ -30,19 +30,65 @@ class Student:
         del self._name
 
     @property
-    def marks(self):
-        return self._mathsMark, self._physicsMark, self._chemistryMark, self._englishMark, self._programmingMark
-    @marks.setter
-    def marks(self, mathsMark, physicsMark, chemistryMark, englishMark, programmingMark):
+    def mathsMark(self):
+        return self._mathsMark
+    @mathsMark.setter
+    def mathsMark(self, mathsMark):
         self._mathsMark = mathsMark
-        self._physicsMark = physicsMark
-        self._chemistryMark = chemistryMark
-        self._englishMark = englishMark
-        self._programmingMark = programmingMark
-    @marks.deleter
-    def marks(self):
+    @mathsMark.deleter
+    def mathsMark(self):
         del self._mathsMark
+    
+    @property
+    def physicsMark(self):
+        return self._physicsMark
+    @physicsMark.setter
+    def physicsMark(self, physicsMark):
+        self._physicsMark = physicsMark
+    @physicsMark.deleter
+    def physicsMark(self):
         del self._physicsMark
+    
+    @property
+    def chemistryMark(self):
+        return self._chemistryMark
+    @chemistryMark.setter
+    def chemistryMark(self, chemistryMark):
+        self._chemistryMark = chemistryMark
+    @chemistryMark.deleter
+    def chemistryMark(self):
         del self._chemistryMark
+    
+    @property
+    def englishMark(self):
+        return self._englishMark
+    @englishMark.setter
+    def englishMark(self, englishMark):
+        self._englishMark = englishMark
+    @englishMark.deleter
+    def englishMark(self):
         del self._englishMark
+    
+    @property
+    def programmingMark(self):
+        return self._programmingMark
+    @programmingMark.setter
+    def programmingMark(self, programmingMark):
+        self._programmingMark = programmingMark
+    @programmingMark.deleter
+    def programmingMark(self):
         del self._programmingMark
+    
+
+    def displayStudentDetails(self):
+        print(
+            '''
+            Roll Number : {}
+            Name : {}
+            Maths Mark : {}
+            Physics Mark : {}
+            Chemistry Mark : {}
+            English Mark : {}
+            Programming Mark : {}
+            '''.format(self.rollNumber, self.name, self.mathsMark, self.physicsMark,)
+        )
