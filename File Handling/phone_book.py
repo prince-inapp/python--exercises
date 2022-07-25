@@ -13,11 +13,23 @@ def displayOptions():
 
 phone_book = dict()
 
-if(os.path.isfile('contact.txt')):
-    pass
+
+print(os.getcwd())
+current_path = os.getcwd()+'\File Handling\Contacts'
+if(os.path.exists(current_path)):
+    os.chdir(current_path)
+    if(os.path.exists(current_path+'\contact.txt')):
+        pass
+    else:
+        f = open('contact.txt','w')
+        f.close()
 else:
+    os.makedirs(current_path)
+    os.chdir(current_path)
     f = open('contact.txt','w')
     f.close()
+print(os.getcwd())
+
 
 
 while(True):
@@ -49,11 +61,11 @@ while(True):
         case 3:
             '''Delete a contact'''
             name = input("enter name to delete :")
-            """ if(name in phone_book.keys()):
-                del phone_book[name]
-                print("contact {} deleted!...".format(name))
-            else:
-                print("No names found!...") """
+            #  if(name in phone_book.keys()):
+            #     del phone_book[name]
+            #     print("contact {} deleted!...".format(name))
+            # else:
+            #     print("No names found!...") 
             f = open('contact.txt','r')
             content = f.readlines()
             f.close()
@@ -77,10 +89,10 @@ while(True):
         case 4:
             '''seach by contact by name'''
             name = input("Enter name to search: ")
-            """ if name in phone_book.keys():
-                print("{}-{}".format(name,phone_book[name]))
-            else:
-                print("no contacts found") """
+        #    if name in phone_book.keys():
+        #         print("{}-{}".format(name,phone_book[name]))
+        #     else:
+        #         print("no contacts found") 
             f = open('contact.txt','r')
             content = f.readlines()
             f.close()
@@ -97,14 +109,14 @@ while(True):
         case 5:
             '''search by number'''
             number = input("Enter phone number:")
-            """ numbers = list(phone_book.values())
-            #print(numbers)
-            if(number in numbers):
-                pos = numbers.index(number)
-                names = list(phone_book.keys())
-                print("Name :",names[pos])
-            else:
-                print("number not found!") """
+            # numbers = list(phone_book.values())
+            # #print(numbers)
+            # if(number in numbers):
+            #     pos = numbers.index(number)
+            #     names = list(phone_book.keys())
+            #     print("Name :",names[pos])
+            # else:
+            #     print("number not found!")
             f = open('contact.txt','r')
             content = f.readlines()
             f.close()
@@ -121,5 +133,7 @@ while(True):
                 print("No contacts found")
             
         case 6:
+            if(not f.closed):
+                f.close()
             print("Program Exited!")
             break
