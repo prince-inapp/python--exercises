@@ -1,4 +1,3 @@
-from tkinter import EXCEPTION
 import pyodbc
 def displayOptions():
     print('''
@@ -90,5 +89,25 @@ while True:
                 conn.close()
         
         case 4:
+            # search using name
+            name = input("enter name :")
+            try:
+                conn = pyodbc.connect(conString)
+                myCursor = conn.cursor()
+                myCursor.execute('SELECT Number from Contacts WHERE Name = {}'.format(name))
+                print(myCursor)
+            except Exception as e:
+                print(e)
+            finally:
+                conn.close()
+        
+        case 5:
+            # search using number
+            number = input("Enter the number :")
+            try:
+                conn = pyodbc.connect(conString)
+                myCursor = conn.cursor()
+                myCursor.execute('SELECT name from Contacts WHERE name = {}'.format(name))
+                print(myCursor)
             
             
