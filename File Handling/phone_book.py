@@ -78,7 +78,7 @@ while(True):
                     break
             if(found_contact):
                 f = open('contact.txt','w')
-                print(content)
+                #print(content)
                 f.writelines(content)
                 print("contact {} deleted!...".format(name))
             else:
