@@ -24,7 +24,7 @@ def createTable():
         conn.commit()
         return True
     except Exception as e:
-        print(type(e).__name__)
+        #print(type(e).__name__)
         return False
 
 
@@ -52,13 +52,12 @@ while True:
                 #print(phoneBook)
                 for key, val in phoneBook.items():
                     #print(key,val)
+                    print('-------------------')
                     print('Name - ',key)
                     print('Number - ', val)
                     print('-------------------')
             except Exception as e:
                 print(e)
-            
-            
             
 
         case 2:
@@ -73,29 +72,38 @@ while True:
                 print("Contact added successfully...")
             except Exception as e:
                 print(type(e).__name__)
+            finally:
+                conn.close()
         
         case 3:
             # delete a contact
-            name = input("Enter the name you want to delete")
+            name = input("Enter the name you want to delete: ")
             try:
                 conn = pyodbc.connect(conString)
                 myCursor = conn.cursor()
-                myCursor.execute('DELETE FROM Contacts WHERE name = {}'.format(name))
-                conn.commit()
-                print('Contact Deleted...')
+                myCursor.execute('DELETE FROM Contacts WHERE name = ?',(name))
+                print(myCursor.fetchall())
+                print("Contact Deleted")
             except Exception as e:
-                print(e)
+                print("Error... No contacts found")
+                #print(e)
             finally:
                 conn.close()
         
         case 4:
             # search using name
-            name = input("enter name :")
+            name = input("Enter Name :")
             try:
                 conn = pyodbc.connect(conString)
                 myCursor = conn.cursor()
-                myCursor.execute('SELECT Number from Contacts WHERE Name = {}'.format(name))
-                print(myCursor)
+                myCursor.execute('SELECT Number from Contacts WHERE Name = ?',(name))
+                number = myCursor.fetchall()
+                if(len(number)!=0):
+                    for i in number:
+                        print(str(i[0]))
+                #print(number)
+                else:
+                    print("No Contact Found")
             except Exception as e:
                 print(e)
             finally:
@@ -107,7 +115,23 @@ while True:
             try:
                 conn = pyodbc.connect(conString)
                 myCursor = conn.cursor()
-                myCursor.execute('SELECT name from Contacts WHERE name = {}'.format(name))
-                print(myCursor)
+                myCursor.execute('SELECT name from Contacts WHERE Number = ?',(number))
+                name = myCursor.fetchall()
+                if(len(name)!=0):
+                    for i in name:
+                        print(i[0])
+                else:
+                    print("No Contact Found")
+                #print(myCursor.fetchone()[0])
+            except Exception as e:
+                print(e)
+            finally:
+                conn.close()
+        
+        case 6:
+            exit()
+        
+        case _:
+            print("Invalid Option...")
             
             
