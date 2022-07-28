@@ -67,13 +67,31 @@ class Train:
 class System:
     stations = {1: 'TVM', 2: 'ALP', 3: 'ERN', 4: 'KZK'}
     # trains
-    tvm_alp = Train()
-    tvm_ern = Train()
-    tvm_kzk = Train()
-    
+    tvm_alp = Train(1, 'TVM', 'ALP', 'TVM-ALP', ['ALP'])
+    tvm_ern = Train(2, 'TVM', 'ERN', 'TVM-ERN', ['ALP', 'ERN'])
+    tvm_kzk = Train(3, 'TVM', 'KZK', 'TVM-KZK', ['ALP', 'ERN', 'KZK'])
+    remainingSeats = {
+        1: 5,
+        2: 5,
+        3: 5
+    }
 
     def enterPassengerDetails(self):
         name = input("Enter Name: ")
+        passenger = Passenger()
+        passenger.name = name
+        return passenger
+
+    def findTrain(self, from_, to_):
+        trains = {1: self.tvm_alp, 2: self.tvm_ern, 3: self.tvm_kzk}
+        for train in trains.values():
+            if train.noOfSeats>0 and train.source == from_ and train.destination == to_:
+                train.noOfSeats -= 1
+                return train
+            
+
+
+
 
     def from_and_to(self):
         #stations = {1: 'TVM', 2: 'ALP', 3: 'ERN', 4: 'KZK'}
@@ -95,4 +113,9 @@ class System:
 #p = System().from_and_to()
 #print(p)
 system = System()
-from_, to_ = system.from_and_to()
+while True:
+    passenger = system.enterPassengerDetails()
+    from_, to_ = system.from_and_to()
+    passenger.source = from_
+    passenger.destination = to_
+
