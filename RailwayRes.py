@@ -50,14 +50,14 @@ class Passenger:
     def name(self, name):
         self.__name = name
 
-class Train(ABC):
+class Train:
 
-    def __init__(self):
-        self.source = None
-        self.destination = None
-        self.stops = None
-        self.trainID = None
-        self.trainName = None
+    def __init__(self, trainID, source, destination,trainName, stops):
+        self.source = source
+        self.destination = destination
+        self.stops = stops
+        self.trainID = trainID
+        self.trainName = trainName
         self.noOfSeats = 5
         self.seats = {} #{seatNumber: Passenger}
         self.passengers = [] # list of passengers
@@ -66,6 +66,15 @@ class Train(ABC):
 
 class System:
     stations = {1: 'TVM', 2: 'ALP', 3: 'ERN', 4: 'KZK'}
+    # trains
+    tvm_alp = Train()
+    tvm_ern = Train()
+    tvm_kzk = Train()
+    
+
+    def enterPassengerDetails(self):
+        name = input("Enter Name: ")
+
     def from_and_to(self):
         #stations = {1: 'TVM', 2: 'ALP', 3: 'ERN', 4: 'KZK'}
         stops = {'TVM': ['ALP', 'ERN', 'KZK'],
@@ -77,12 +86,13 @@ class System:
         ERN
         KZK""")
         from_ = InputValidator.getCheckString("Enter Source Station: ", self.stations.values())
-        temp = str(stops[from_]).join('\n')
-        print(temp)
-        print("""TO:
-        {}""".format(temp))
+        temp = "\n\t\t".join(stops[from_])
+        #print(temp)
+        print("TO:"+"\n\t\t"+temp+"\n")
         to_ = InputValidator.getCheckString("Enter Destination Station: ", self.stations.values())
         return from_, to_
 
-p = System().from_and_to()
-print(p)
+#p = System().from_and_to()
+#print(p)
+system = System()
+from_, to_ = system.from_and_to()
