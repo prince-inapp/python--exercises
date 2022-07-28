@@ -11,6 +11,7 @@ except Exception as e:
     print("Not connected to db")
 
 class InputValidator:
+    @staticmethod
     def getInt(msg, min, max):
         while True:
             try:
@@ -19,6 +20,18 @@ class InputValidator:
                     print("Invalid Input... Try again...\n :")
                     continue
                 return num
+            except Exception as e:
+                print("Invalid Input... Try again...\n :")
+                continue
+    @staticmethod
+    def getCheckString(msg, stationList ):
+        while True:
+            try:
+                str = input(msg).upper()
+                if str not in stationList:
+                    print("Invalid Input... Try again...\n :")
+                    continue
+                return str
             except Exception as e:
                 print("Invalid Input... Try again...\n :")
                 continue
@@ -46,52 +59,30 @@ class Train(ABC):
         self.trainID = None
         self.trainName = None
         self.noOfSeats = 5
-        self.seats = {}
-        self.passengers = []
+        self.seats = {} #{seatNumber: Passenger}
+        self.passengers = [] # list of passengers
 
 
-class TVM_ALP(Train):
-    def __init__(self):
-        Train.__init__(self)
-        self.trainName = "TVM ALP"
-        self.source = "TVM"
-        self.destination = "ALP"
-        self.trainID = 1 #"TVM-ALP"
-        self.stops = ["TVM", "ALP"]
-
-class TVM_ERN(Train):
-    def __init__(self):
-        Train.__init__(self)
-        self.trainName = "TVM ERN"
-        self.source = "TVM"
-        self.destination = "ERN"
-        self.trainID = 2 #"TVM-ERN"
-        self.stops = ["TVM","ALP", "ERN"]
-
-class TVM_KZK(Train):
-    def __init__(self):
-        Train.__init__(self)
-        self.trainName = "TVM KZK"
-        self.source = "TVM"
-        self.destination = "KZK"
-        self.trainID = 3 #"TVM-KZK"
-        self.stops = ["TVM", "ALP", "ERN", "KZK"]
 
 class System:
+    stations = {1: 'TVM', 2: 'ALP', 3: 'ERN', 4: 'KZK'}
     def from_and_to(self):
-        dest_dict = {1:['Trivandrum','Alappuzha','Eranakulam', 'Kozhikode'],
-                     2:['Eranakulam', 'Kozhikode'],
-                     3:['Kozhikode']}
-        print("""From :
-        1. Trivandrum
-        2. Alleppy
-        3. Ernakulam
-        4. Kozhikode
-        """)
-        opt = InputValidator.getInt("Enter your choice : ", 1, 3)
-        from_ = dest_dict[opt][0]
-        print("""To :
-        {}{}
-        """.format()
-        to = InputValidator.getInt("Enter Your Choice : ", 1,3))
-        return from_, to
+        #stations = {1: 'TVM', 2: 'ALP', 3: 'ERN', 4: 'KZK'}
+        stops = {'TVM': ['ALP', 'ERN', 'KZK'],
+                 'ALP': ['ERN', 'KZK'],
+                 'ERN': ['KZK']}
+        print("""FROM: 
+        TVM
+        ALP
+        ERN
+        KZK""")
+        from_ = InputValidator.getCheckString("Enter Source Station: ", self.stations.values())
+        temp = str(stops[from_]).join('\n')
+        print(temp)
+        print("""TO:
+        {}""".format(temp))
+        to_ = InputValidator.getCheckString("Enter Destination Station: ", self.stations.values())
+        return from_, to_
+
+p = System().from_and_to()
+print(p)
