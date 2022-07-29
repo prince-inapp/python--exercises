@@ -1,17 +1,50 @@
+import functools
 import pyodbc
 from abc import ABC, abstractmethod
 
 server_one = 'DESKTOP-CKLRF1B\SQLEXPRESS'
 server_two = 'LAPTOP-85QRUTE7\SQLEXPRESS'
 server_ = server_one
-connString = 'Driver={SQL Server};Server={'+server_+'};Database=PhoneBook;Truseted_Connection=yes;'
-print(connString)
-try:
-    conn = pyodbc.connect(connString)
-    print("Connected to db")
-except Exception as e:
-    print(e)
-    print("Not connected to db")
+connString = 'Driver={SQL Server};Server={'+server_+'};Database=RailwayReservation;Truseted_Connection=yes;'
+#print(connString)
+def dbms(func):
+    @functools.wraps(func)
+    def innerWrapper(*args):
+        try:
+            conn = pyodbc.connect(connString)
+        except:
+            print('Connection Error')
+            return None
+        else:
+            curr = conn.cursor()
+            value = func(curr, *args)
+            conn.commit()
+            conn.close()
+            return value
+    return innerWrapper
+
+@dbms
+def getStations(cur):
+    try:
+        cur.execute('SELECT * FROM Stations;')
+        stations = {}
+        for id, station_name in cur:
+            stations[station_name] = id
+        return stations
+    except Exception as e:
+        print(e)
+@dbms
+def getTrainID(cur, dest):
+    try:
+        cur.execute('select * from Trains;')
+        for train_id, train_name, destination, booked_seats, waiting_list in cur:
+            if int(destination) >= dest:
+                if(booked_seats<5):
+                    print(train_name)
+                    return train_id
+        return False
+    except Exception as e:
+        print("Error: ",e)
 
 class InputValidator:
     @staticmethod
@@ -38,6 +71,18 @@ class InputValidator:
             except Exception as e:
                 print("Invalid Input... Try again...\n :")
                 continue
+    
+    def getInt(msg, min, max):
+        while True:
+            try:
+                opt = int(input(msg))
+                if(opt>=min and opt <= max):
+                    return opt
+                else:
+                    raise Exception("Out of range")
+            except Exception as e:
+                print("Enter a valid number...")
+                continue
 
 class Passenger:
     def __init__(self):
@@ -45,7 +90,6 @@ class Passenger:
         self.trainID = None
         self.seatNumber = None
         self.destination = None
-        self.source = None
     @property
     def name(self):
         return self.__name
@@ -53,31 +97,24 @@ class Passenger:
     def name(self, name):
         self.__name = name
 
+'''
 class Train:
 
-    def __init__(self, trainID, source, destination,trainName, stops):
-        self.source = source
+    def __init__(self, trainID,trainName,destination):
+        #self.source = source
         self.destination = destination
-        self.stops = stops
+        #self.stops = stops
         self.trainID = trainID
         self.trainName = trainName
         self.noOfSeats = 5
         self.seats = {} #{seatNumber: Passenger}
         self.passengers = [] # list of passengers
-
-
+'''
 
 class System:
-    stations = {1: 'TVM', 2: 'ALP', 3: 'ERN', 4: 'KZK'}
+
+    stations = getStations()
     # trains
-    tvm_alp = Train(1, 'TVM', 'ALP', 'TVM-ALP', ['ALP'])
-    tvm_ern = Train(2, 'TVM', 'ERN', 'TVM-ERN', ['ALP', 'ERN'])
-    tvm_kzk = Train(3, 'TVM', 'KZK', 'TVM-KZK', ['ALP', 'ERN', 'KZK'])
-    remainingSeats = {
-        1: 5,
-        2: 5,
-        3: 5
-    }
 
     def enterPassengerDetails(self):
         name = input("Enter Name: ")
@@ -85,40 +122,37 @@ class System:
         passenger.name = name
         return passenger
 
-    def findTrain(self, from_, to_):
-        trains = {1: self.tvm_alp, 2: self.tvm_ern, 3: self.tvm_kzk}
-        for train in trains.values():
-            if train.noOfSeats>0 and train.source == from_ and train.destination == to_:
-                train.noOfSeats -= 1
-                return train
-            
-
-
-
-
-    def from_and_to(self):
+    def getDest(self):
         #stations = {1: 'TVM', 2: 'ALP', 3: 'ERN', 4: 'KZK'}
         stops = {'TVM': ['ALP', 'ERN', 'KZK'],
                  'ALP': ['ERN', 'KZK'],
                  'ERN': ['KZK']}
-        print("""FROM: 
-        TVM
+        print("""Please enter your destination: 
         ALP
         ERN
         KZK""")
-        from_ = InputValidator.getCheckString("Enter Source Station: ", self.stations.values())
-        temp = "\n\t\t".join(stops[from_])
+        #from_ = InputValidator.getCheckString("Enter Source Station: ", self.stations.values())
+        #temp = "\n\t\t".join(stops[from_])
         #print(temp)
-        print("TO:"+"\n\t\t"+temp+"\n")
-        to_ = InputValidator.getCheckString("Enter Destination Station: ", self.stations.values())
-        return from_, to_
+        #print("TO:"+"\n\t\t"+temp+"\n")
+        dest = InputValidator.getCheckString("Enter Destination Station: ", self.stations.keys())
+        
+    
+    def bookTrain(passenger):
+        train_details = getTrainID(passenger)
 
-#p = System().from_and_to()
-#print(p)
 system = System()
 while True:
-    passenger = system.enterPassengerDetails()
-    from_, to_ = system.from_and_to()
-    passenger.source = from_
-    passenger.destination = to_
+    print('''
+    1. Book a ticket
+    2. List all passengers
+    3. List Waiting List Passengers
+    4. Exit
+    ''')
+    opt = InputValidator.getInt("Choose Option : ", 1,4)
+    if(opt==1):
+        passenger = system.enterPassengerDetails()
+        passenger.destination = system.getDest()
+        passenger.trainID = getTrainID(passenger.destination)
+        
 
