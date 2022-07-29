@@ -1,8 +1,11 @@
 import pyodbc
 from abc import ABC, abstractmethod
 
-connString = 'Driver={SQL Server};Server=LAPTOP-85QRUTE7\SQLEXPRESS;Database=PhoneBook;Truseted_Connection=yes;'
-
+server_one = 'DESKTOP-CKLRF1B\SQLEXPRESS'
+server_two = 'LAPTOP-85QRUTE7\SQLEXPRESS'
+server_ = server_one
+connString = 'Driver={SQL Server};Server={'+server_+'};Database=PhoneBook;Truseted_Connection=yes;'
+print(connString)
 try:
     conn = pyodbc.connect(connString)
     print("Connected to db")
@@ -42,7 +45,7 @@ class Train(ABC):
     def __init__(self):
         self.source = None
         self.destination = None
-        self.stops = None
+        self.stops = []
         self.trainID = None
         self.trainName = None
         self.noOfSeats = 5
@@ -50,34 +53,9 @@ class Train(ABC):
         self.passengers = []
 
 
-class TVM_ALP(Train):
-    def __init__(self):
-        Train.__init__(self)
-        self.trainName = "TVM ALP"
-        self.source = "TVM"
-        self.destination = "ALP"
-        self.trainID = 1 #"TVM-ALP"
-        self.stops = ["TVM", "ALP"]
-
-class TVM_ERN(Train):
-    def __init__(self):
-        Train.__init__(self)
-        self.trainName = "TVM ERN"
-        self.source = "TVM"
-        self.destination = "ERN"
-        self.trainID = 2 #"TVM-ERN"
-        self.stops = ["TVM","ALP", "ERN"]
-
-class TVM_KZK(Train):
-    def __init__(self):
-        Train.__init__(self)
-        self.trainName = "TVM KZK"
-        self.source = "TVM"
-        self.destination = "KZK"
-        self.trainID = 3 #"TVM-KZK"
-        self.stops = ["TVM", "ALP", "ERN", "KZK"]
-
 class System:
+    
+
     def from_and_to(self):
         dest_dict = {1:['Trivandrum','Alappuzha','Eranakulam', 'Kozhikode'],
                      2:['Eranakulam', 'Kozhikode'],
@@ -90,8 +68,6 @@ class System:
         """)
         opt = InputValidator.getInt("Enter your choice : ", 1, 3)
         from_ = dest_dict[opt][0]
-        print("""To :
-        {}{}
-        """.format()
-        to = InputValidator.getInt("Enter Your Choice : ", 1,3))
+        to = InputValidator.getInt("Enter Your Choice : ", 1,3)
         return from_, to
+        
