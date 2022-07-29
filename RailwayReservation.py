@@ -98,7 +98,11 @@ def getTrainID(cur, dest):
 
 @dbms
 def addToWaitingList(cur):
-    cur.execute()
+    cur.execute('select * from Trains')
+    for row in cur.fetchall():
+        waiting_list = row[4]
+        if(waiting_list<2):
+            
 
 @dbms
 def bookTicket(cur,name, dest, trainId):
