@@ -5,12 +5,12 @@ from abc import ABC, abstractmethod
 
 server_one = 'DESKTOP-CKLRF1B\SQLEXPRESS'
 server_two = 'LAPTOP-85QRUTE7\SQLEXPRESS'
-server_ = server_one
+server_ = server_two
 connString = 'Driver={SQL Server};Server={'+server_+'};Database=RailwayReservation;Truseted_Connection=yes;'
 #print(connString)
 
-global passengerID
-passengerID = 1
+# conn = pyodbc.connect(connString)
+# print('Connected to Database')
 
 train = {
     101 : 'TVM-ALP',
@@ -18,8 +18,6 @@ train = {
     103 : 'TVM-KZK'
 }
 
-def getTrainId(dest):
-    pass
 
 
 class InputValidator:
@@ -80,8 +78,9 @@ def getStations(cur):
 def getTrainID(cur, dest):
     try:
         cur.execute('select * from Trains;')
-        # print([i for i in cur.fetchall()])
+       # print([i for i in cur.fetchall()])
         for row in cur.fetchall():
+            print(row)
             print(row[2])
             waiting_list= row[4]
             print("Booked seats", row[3])
@@ -97,26 +96,45 @@ def getTrainID(cur, dest):
         print("Error: ",e)
 
 @dbms
-def addToWaitingList(cur):
+def addToWaitingList(cur, name):
     cur.execute('select * from Trains')
     for row in cur.fetchall():
         waiting_list = row[4]
         if(waiting_list<2):
+            print("adding to waiting list")
+            cur.execute('update Trains set waiting_list = waiting_list+1 where train_id = ?', row[0])
+            cur.execute('insert into WaitingList (p_name,train_name, train_id) values (?,?,?)', name,train[row[0]],row[0])
+            return True
+        else:
+            return False
             
-
 @dbms
 def bookTicket(cur,name, dest, trainId):
     cur.execute('INSERT INTO Passengers values (?,?,?) ',(name, dest, trainId))
-    cur.execute(f'select booked_seats from Trains where train_id = {trainId}')
+    cur.execute('select booked_seats from Trains where train_id = ?',(trainId))
     print("Booking Success!")
     seats = [i for i in cur.fetchall()]
     print(seats)
     seat = 0
     seat = seats[0][0] + 1
     print(seat)
-
     cur.execute('update Trains set booked_seats = ? where train_id = ?',(seat, trainId))
     print("success")
+
+@dbms
+def getPassengers(cur):
+    cur.execute('select * from Passengers')
+    for row in cur.fetchall():
+        print(row)
+    return cur.fetchall()
+
+@dbms
+def getWaitingList(cur):
+    cur.execute('select * from WaitingList')
+    for row in cur.fetchall():
+        print(row)
+    return cur.fetchall()
+
 while True:
     print('''
     1. Book a ticket
@@ -136,7 +154,20 @@ while True:
         trainId = getTrainID(dest)
         print(trainId)
         if not trainId:
-            addToWaitingList()
+            if(addToWaitingList(name)):
+                print("Added to Waiting List")
+            else:
+                print("No seats available")
+        else:
+            bookTicket(name, dest, trainId)
+    elif(opt==2):
+        result = getPassengers()
+        #print(result)
+    elif(opt==3):
+        result = getWaitingList()
+        #print(result)
+    else:
+        break
 
-        f = bookTicket(name, dest, trainId)
+        
         

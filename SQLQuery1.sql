@@ -55,4 +55,4 @@ select * from Trains
 select booked_seats from Trains where train_id = 101
 
 select * from Passengers
-truncate Passengers
+truncate Passengers;

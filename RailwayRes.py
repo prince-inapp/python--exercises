@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 
 server_one = 'DESKTOP-CKLRF1B\SQLEXPRESS'
 server_two = 'LAPTOP-85QRUTE7\SQLEXPRESS'
-server_ = server_one
+server_ = server_two
 connString = 'Driver={SQL Server};Server={'+server_+'};Database=RailwayReservation;Truseted_Connection=yes;'
 #print(connString)
 def dbms(func):
