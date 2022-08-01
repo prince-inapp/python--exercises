@@ -16,7 +16,7 @@ class calculator(ABC):
         except:
             print("Invalid Number")
     
-    @property
+    @property #getter
     def num2(self):
         return self.__num2
     @num2.setter
