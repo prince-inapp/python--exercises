@@ -18,7 +18,7 @@ def addPatient( id, name, gender, age, bloodgroup):
 def updatePatient( id, name, gender, age, bloodgroup):
         cursor = conn.cursor()
         try:
-            cursor.execute('update patients set id = ?, name = ?, gender = ?, age = ?, bloodGroup = ? where id = ?', (id, name, gender, age, bloodgroup, id))
+            cursor.execute('update patients set patientId = ?, name = ?, gender = ?, age = ?, bloodGroup = ? where patientId = ?', (id, name, gender, age, bloodgroup, id))
             conn.commit()
             print("Details updated...")
         except:
@@ -27,7 +27,7 @@ def updatePatient( id, name, gender, age, bloodgroup):
 def searchPatient( id):
         cursor = conn.cursor()
         try:
-            cursor.execute("select * from patients where id = ?", id)
+            cursor.execute("select * from patients where patientId = ?", id)
             if(cursor.rowcount == 0):
                 print("Patient not registered")
                 return False
@@ -62,7 +62,8 @@ while(True):
             age = int(input("Age: "))
             bg = input("Blood Group: ")
             if bg in ('A+', 'B+', 'A-', 'B-', 'O+', 'O-'):
-                addPatient(id, name, gender, age, bg)
+                if(addPatient(id, name, gender, age, bg)):
+                    print("Patient Added")
         except Exception as e:
             print(e)
     if(opt == 2):
@@ -76,8 +77,19 @@ while(True):
                 bg = input("Blood Group: ")
                 if bg in ['A+', 'B+', 'A-', 'B-', 'O+', 'O-']:
                     updatePatient(id, name, gender, age, bg)
+                    
             except Exception as e:
-                print(e)      
+                print(e)
+    if(opt == 4):
+        
+        cursor = conn.cursor()
+        try:
+            cursor.execute("Select * from patients")
+            for i in cursor:
+                print("ID:{}\t\tName:{}\t\tGender: {}\t\tAge: {}\t\tBlood Group{}".format(i[0], i[1], i[2], i[3], i[4]))
+        except:
+            print("listing error")
+
     if(opt == 5):
         id = int(input("Enter ID:"))
-        searchPatient(id)
+        temp = searchPatient(id)
